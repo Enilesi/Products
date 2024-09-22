@@ -2,100 +2,117 @@
 #include <vector>
 #include <string>
 
-class Item{
-    private:
-        int item_id;
-        std::string item_name;
-        int quantity;
-        double price;
-    public:
-        Item(int id = 0,std::string i_n="", int q=0, double p=0.0){
-            item_id=id;
-            item_name=i_n;
-            price=p;
-            quantity=q;
-        }
+class Item {
+private:
+    static int next_id;
+    int item_id;
+    std::string item_name;
+    int quantity;
+    double price;
 
-        void displayInventory() const {
-        std::cout << "Item: " << item_name 
+public:
+    Item(std::string i_n = "", int q = 0, double p = 0.0) {
+        item_id = next_id++;
+        item_name = i_n;
+        quantity = q;
+        price = p;
+    }
+
+    void display_inventory() const {
+        std::cout << "Item ID: " << item_id 
+                  << ", Name: " << item_name 
                   << ", Quantity: " << quantity 
-                  << ", Price:" << price << "$"<< std::endl;
-        }
-        const std::string& getName() const { return item_name; }
-        const int getId() const { return item_id; }
-        int getQuantity() const { return quantity; }
-        double getPrice() const { return price; }
+                  << ", Price: $" << price << std::endl;
+    }
+
+    const std::string& get_name() const { return item_name; }
+    const int get_id() const { return item_id; }
+    int get_quantity() const { return quantity; }
+    double get_price() const { return price; }
 };
+
+int Item::next_id = 1;
 
 class Store {
-    private:
-        int store_id;
-        std::string store_name;
-        std::vector<Item> items;
-    public:
-        Store(int id = 0,std::string s_n="",std::vector<Item> i = {}){
-            store_id=id;
-            store_name=s_n;
-            items=i;
-        }
-        void displayStoreItems() const {
-        std::cout << "Store: " << store_name << std::endl;
-        for (const auto& item : items) {
-            item.displayInventory();
-            }
-        }
+private:
+    static int next_id;
+    int store_id;
+    std::string store_name;
+    std::vector<Item> items;
 
-        void addItem(const Item& item) {
-            items.push_back(item);
+public:
+    Store(std::string s_n = "", std::vector<Item> i = {}) {
+        store_id = next_id++;
+        store_name = s_n;
+        items = i;
+    }
+
+    void display_store_items() const {
+        std::cout << "Store ID: " << store_id 
+                  << ", Name: " << store_name << std::endl;
+        for (const auto& item : items) {
+            item.display_inventory();
         }
-        const int getId() const { return store_id; }
-        const std::string& getStoreName() const { return store_name; }
+    }
+
+    void add_item(const Item& item) {
+        items.push_back(item);
+    }
+
+    const int get_id() const { return store_id; }
+    const std::string& get_store_name() const { return store_name; }
 };
+
+int Store::next_id = 1;
 
 class Company {
-    private:
-        int company_id;
-        std::string company_name;
-        std::vector<Store> stores;
+private:
+    static int next_id;
+    int company_id;
+    std::string company_name;
+    std::vector<Store> stores;
 
-    public:
-        Company(int id = 0,const std::string c_n="",std::vector<Store> s={}){
-            company_id=id;
-            company_name=c_n;
-            stores=s;
-        } 
+public:
+    Company(std::string c_n = "", std::vector<Store> s = {}) {
+        company_id = next_id++;
+        company_name = c_n;
+        stores = s;
+    }
 
-
-        void displayCompanyStores() const {
-            std::cout << "Company: " << company_name << std::endl;
-            for (const auto& store : stores) {
-                store.displayStoreItems();
-            }
+    void display_company_stores() const {
+        std::cout << "Company ID: " << company_id 
+                  << ", Name: " << company_name << std::endl;
+        for (const auto& store : stores) {
+            store.display_store_items();
         }
+    }
 
-        void addStore(const Store& store) {
-            stores.push_back(store);
-        }
-        const std::string& getCompanyName() const { return company_name; }
-        const int getCompanyId() const { return company_id; }
-        
+    void add_store(const Store& store) {
+        stores.push_back(store);
+    }
+
+    const std::string& get_company_name() const { return company_name; }
+    const int get_company_id() const { return company_id; }
 };
 
+int Company::next_id = 1;
 
 int main() {
-    Item item1(1,"Laptop", 10, 999.99);
-    Item item2(2,"Smartphone", 25, 499.99);
-    Item item3(3,"Tablet", 15, 299.99);
+    Item item1("Laptop", 10, 999.99);
+    Item item2("Smartphone", 25, 499.99);
+    Item item3("Tablet", 15, 299.99);
 
-    item1.displayInventory();
-    item2.displayInventory();
-    item3.displayInventory();
+    item1.display_inventory();
+    item2.display_inventory();
+    item3.display_inventory();
 
-    Store store1(1,"Store1",{item1,item2});
-    store1.addItem(item3);
-    store1.displayStoreItems();
+    Store store1("Store1", {item1, item2});
+    store1.add_item(item3);
+    store1.display_store_items();
 
-    Company comp1(1,"Comp1");
-    comp1.addStore(store1);
-    comp1.displayCompanyStores();
+    Company comp1("Comp1");
+    comp1.add_store(store1);
+    comp1.display_company_stores();
+
+    return 0;
 }
