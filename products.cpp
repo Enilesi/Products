@@ -37,12 +37,40 @@ class Store {
         std::cout << "Store: " << store_name << std::endl;
         for (const auto& item : items) {
             item.displayInventory();
+            }
         }
-    }
 
-    const std::string& getStoreName() const { return store_name; }
+        void addItem(const InventoryManager& item) {
+            items.push_back(item);
+        }
+
+        const std::string& getStoreName() const { return store_name; }
 };
 
+class Company {
+    private:
+        std::string company_name;
+        std::vector<Store> stores;
+
+    public:
+        Company(const std::string c_n="",std::vector<Store> s={}){
+            company_name=c_n;
+            stores=s;
+        } 
+
+
+        void displayCompanyStores() const {
+            std::cout << "Company: " << company_name << std::endl;
+            for (const auto& store : stores) {
+                store.displayStoreItems();
+            }
+        }
+
+        void addStore(const Store& store) {
+            stores.push_back(store);
+        }
+        const std::string& getCompanyName() const { return company_name; }
+};
 
 
 
@@ -55,6 +83,11 @@ int main() {
     item2.displayInventory();
     item3.displayInventory();
 
-    Store store1("Store1",{item1,item2,item3});
+    Store store1("Store1",{item1,item2});
+    store1.addItem(item3);
     store1.displayStoreItems();
+
+    Company comp1("Comp1");
+    comp1.addStore(store1);
+    comp1.displayCompanyStores();
 }
