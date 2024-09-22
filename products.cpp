@@ -18,7 +18,29 @@ class InventoryManager{
         std::cout << "Item: " << item_name 
                   << ", Quantity: " << quantity 
                   << ", Price:" << price << "$"<< std::endl;
+        }
+        const std::string& getName() const { return item_name; }
+        int getQuantity() const { return quantity; }
+        double getPrice() const { return price; }
+};
+
+class Store {
+    private:
+        std::string store_name;
+        std::vector<InventoryManager> items;
+    public:
+        Store(std::string s_n="",std::vector<InventoryManager> i = {}){
+            store_name=s_n;
+            items=i;
+        }
+        void displayStoreItems() const {
+        std::cout << "Store: " << store_name << std::endl;
+        for (const auto& item : items) {
+            item.displayInventory();
+        }
     }
+
+    const std::string& getStoreName() const { return store_name; }
 };
 
 
@@ -32,4 +54,7 @@ int main() {
     item1.displayInventory();
     item2.displayInventory();
     item3.displayInventory();
+
+    Store store1("Store1",{item1,item2,item3});
+    store1.displayStoreItems();
 }
