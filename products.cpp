@@ -128,9 +128,19 @@ int Company::next_id = 1;
 
 class InventoryManager {
 private:
+    static std::shared_ptr<InventoryManager> instance;
     std::vector<std::shared_ptr<Company>> companies;
 
+    InventoryManager() {}
+
 public:
+    static std::shared_ptr<InventoryManager> get_instance() {
+        if (!instance) {
+            instance = std::shared_ptr<InventoryManager>(new InventoryManager());
+        }
+        return instance;
+    }
+
     void add_company(std::shared_ptr<Company> company) {
         companies.push_back(company);
     }
@@ -152,6 +162,8 @@ public:
         }
     }
 };
+
+std::shared_ptr<InventoryManager> InventoryManager::instance = nullptr;
 
 class Laptop : public Item {
 private:
@@ -286,11 +298,9 @@ private:
     std::string brand;
     std::string type;
 
-
 public:
     Gaming(std::string i_n, int q, double p, std::string b, std::string t)
         : Item(i_n, q, p), brand(b), type(t) {}
-
 
     void display_inventory() const override {
         std::cout << "Gaming - ID: " << get_id()
@@ -321,10 +331,33 @@ public:
     }
 };
 
-
-
+class ItemFactory {
+public:
+    static std::shared_ptr<Item> create_item(std::string type, std::string name, int quantity, double price, std::string brand, std::string spec1 = "", int spec2 = 0, bool spec3 = false) {
+        if (type == "Laptop") {
+            return std::make_shared<Laptop>(name, quantity, price, brand, spec1, spec2, spec3);
+        } else if (type == "Smartphone") {
+            return std::make_shared<Smartphone>(name, quantity, price, brand, spec1, spec2);
+        } else if (type == "TV") {
+            return std::make_shared<TV>(name, quantity, price, brand, spec2, spec1);
+        } else if (type == "Camera") {
+            return std::make_shared<Camera>(name, quantity, price, brand, spec2, spec3);
+        } else if (type == "Tablet") {
+            return std::make_shared<Tablet>(name, quantity, price, brand, spec2, spec3);
+        } else if (type == "Watch") {
+            return std::make_shared<Watch>(name, quantity, price, brand, spec3, spec2);
+        } else if (type == "Gaming") {
+            return std::make_shared<Gaming>(name, quantity, price, brand, spec1);
+        } else if (type == "Accessories") {
+            return std::make_shared<Accessories>(name, quantity, price, brand, spec1);
+        }
+        return nullptr;
+    }
+};
 
 int main() {
+    auto manager = InventoryManager::get_instance();
+
     auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
     auto smartphone = std::make_shared<Smartphone>("Ghalaxy S21", 20, 999.99, "Sansung", "Handroid", 128);
     auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "ELG", 55, "4K");
@@ -333,9 +366,6 @@ int main() {
     auto watch = std::make_shared<Watch>("Capple Watch", 30, 399.99, "Capple", true, true);
     auto accessory = std::make_shared<Accessories>("Laptop Bag", 30, 59.99, "HiPi", "Bag");
     auto gaming = std::make_shared<Gaming>("Gaming Mouse", 100, 49.99, "Logictech", "Mouse");
-   
-
-
 
     auto store1 = std::make_shared<Store>("Laltex");
     store1->add_item(laptop);
@@ -357,19 +387,18 @@ int main() {
     auto comp2 = std::make_shared<Company>("Cemag");
     comp2->add_store(store2);
 
-    auto store4 = std:: make_shared<Store>("Phlanco");
+    auto store4 = std::make_shared<Store>("Phlanco");
     store4->add_item(accessory);
     store4->add_item(gaming);
 
     auto comp3 = std::make_shared<Company>("Phlanco");
     comp3->add_store(store4);
 
-    InventoryManager manager;
-    manager.add_company(comp1);
-    manager.add_company(comp2);
-    manager.add_company(comp3);
+    manager->add_company(comp1);
+    manager->add_company(comp2);
+    manager->add_company(comp3);
 
-    manager.display_all_companies();
+    manager->display_all_companies();
 
     return 0;
 }
