@@ -239,41 +239,67 @@ public:
     }
 };
 
-class Wearable : public Item {
+class Tablet : public Item {
 private:
     std::string brand;
-    std::string type;
-    bool waterproof;
+    int storage;
+    bool supports_pen;
 
 public:
-    Wearable(std::string i_n, int q, double p, std::string b, std::string t, bool w)
-        : Item(i_n, q, p), brand(b), type(t), waterproof(w) {}
+    Tablet(std::string i_n, int q, double p, std::string b, int s, bool sp)
+        : Item(i_n, q, p), brand(b), storage(s), supports_pen(sp) {}
 
     void display_inventory() const override {
-        std::cout << "Wearable - ID: " << get_id()
-                  << ", Name: " << get_name() 
-                  << ", Brand: " << brand 
-                  << ", Type: " << type 
-                  << ", Waterproof: " << (waterproof ? "Yes" : "No")
+        std::cout << "Tablet - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Storage: " << storage << "GB"
+                  << ", Pen Support: " << (supports_pen ? "Yes" : "No")
                   << ", Quantity: " << get_quantity()
                   << ", Price: $" << get_price() << std::endl;
     }
 };
+
+class Watch : public Item {
+private:
+    std::string brand;
+    bool waterproof;
+    bool has_gps;
+
+public:
+    Watch(std::string i_n, int q, double p, std::string b, bool w, bool gps)
+        : Item(i_n, q, p), brand(b), waterproof(w), has_gps(gps) {}
+
+    void display_inventory() const override {
+        std::cout << "Watch - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Waterproof: " << (waterproof ? "Yes" : "No")
+                  << ", GPS: " << (has_gps ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+
 
 int main() {
     auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Alienware", "Intel i7", 16, 512);
     auto smartphone = std::make_shared<Smartphone>("Galaxy S21", 20, 999.99, "Samsung", "Android", 128);
     auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "LG", 55, "4K");
     auto camera = std::make_shared<Camera>("DSLR Camera", 7, 1200.00, "Canon", 24, true);
-    auto wearable = std::make_shared<Wearable>("Fitness Band", 30, 49.99, "Fitbit", "Fitness Band", true);
+    auto tablet = std::make_shared<Tablet>("iPad Pro", 15, 799.99, "Apple", 256, true);
+    auto watch = std::make_shared<Watch>("Apple Watch", 30, 399.99, "Apple", true, true);
+
 
     auto store1 = std::make_shared<Store>("Altex");
     store1->add_item(laptop);
     store1->add_item(smartphone);
     store1->add_item(camera);
 
-    auto store2 = std::make_shared<Store>("Hervis");
-    store2->add_item(wearable);
+    auto store2 = std::make_shared<Store>("Emag Showroom");
+    store2->add_item(tablet);
+    store2->add_item(watch);
 
     auto store3 = std::make_shared<Store>("Media Galaxy");
     store3->add_item(smartphone);
@@ -283,7 +309,7 @@ int main() {
     comp1->add_store(store1);
     comp1->add_store(store3);
 
-    auto comp2 = std::make_shared<Company>("Hervis");
+    auto comp2 = std::make_shared<Company>("Emag");
     comp2->add_store(store2);
 
     InventoryManager manager;
