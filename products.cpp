@@ -17,7 +17,7 @@ public:
     Item(std::string i_n = "", int q = 0, double p = 0.0)
         : item_id(next_id++), item_name(i_n), quantity(q), price(p) {}
 
-    void display_inventory() const {
+    virtual void display_inventory() const {
         std::cout << "Item ID: " << item_id 
                   << ", Name: " << item_name 
                   << ", Quantity: " << quantity 
@@ -99,9 +99,10 @@ public:
     Company(std::string c_n = "") : company_id(next_id++), company_name(c_n) {}
 
     void display_company_stores() const {
-        std::cout << "Company ID: " << company_id 
+        std::cout  << "Company ID: " << company_id 
                   << ", Name: " << company_name << std::endl;
         for (const auto& store : stores) {
+            std::cout << std::endl;
             store->display_store_items();
         }
     }
@@ -145,51 +146,151 @@ public:
 
     void display_all_companies() const {
         for (const auto& company : companies) {
+            std:: cout << std::endl;
             company->display_company_stores();
+            std:: cout << std::endl;
         }
     }
 };
 
+class Laptop : public Item {
+private:
+    std::string brand;
+    std::string processor;
+    int ram;
+    int storage;
+
+public:
+    Laptop(std::string i_n, int q, double p, std::string b, std::string proc, int r, int s)
+        : Item(i_n, q, p), brand(b), processor(proc), ram(r), storage(s) {}
+
+    void display_inventory() const override {
+        std::cout << "Laptop - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Processor: " << processor
+                  << ", RAM: " << ram << "GB"
+                  << ", Storage: " << storage << "GB"
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Smartphone : public Item {
+private:
+    std::string brand;
+    std::string os;
+    int storage;
+
+public:
+    Smartphone(std::string i_n, int q, double p, std::string b, std::string o, int s)
+        : Item(i_n, q, p), brand(b), os(o), storage(s) {}
+
+    void display_inventory() const override {
+        std::cout << "Smartphone - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", OS: " << os 
+                  << ", Storage: " << storage << "GB"
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class TV : public Item {
+private:
+    std::string brand;
+    int size;
+    std::string resolution;
+
+public:
+    TV(std::string i_n, int q, double p, std::string b, int s, std::string res)
+        : Item(i_n, q, p), brand(b), size(s), resolution(res) {}
+
+    void display_inventory() const override {
+        std::cout << "TV - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Size: " << size << " inches"
+                  << ", Resolution: " << resolution
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Camera : public Item {
+private:
+    std::string brand;
+    int megapixels;
+    bool is_dslr;
+
+public:
+    Camera(std::string i_n, int q, double p, std::string b, int mp, bool dslr)
+        : Item(i_n, q, p), brand(b), megapixels(mp), is_dslr(dslr) {}
+
+    void display_inventory() const override {
+        std::cout << "Camera - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Megapixels: " << megapixels
+                  << ", DSLR: " << (is_dslr ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Wearable : public Item {
+private:
+    std::string brand;
+    std::string type;
+    bool waterproof;
+
+public:
+    Wearable(std::string i_n, int q, double p, std::string b, std::string t, bool w)
+        : Item(i_n, q, p), brand(b), type(t), waterproof(w) {}
+
+    void display_inventory() const override {
+        std::cout << "Wearable - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Type: " << type 
+                  << ", Waterproof: " << (waterproof ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
 int main() {
-    auto item1 = std::make_shared<Item>("Laptop", 10, 999.99);
-    auto item2 = std::make_shared<Item>("Smartphone", 25, 499.99);
-    auto item3 = std::make_shared<Item>("Tablet", 15, 299.99);
+    auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Alienware", "Intel i7", 16, 512);
+    auto smartphone = std::make_shared<Smartphone>("Galaxy S21", 20, 999.99, "Samsung", "Android", 128);
+    auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "LG", 55, "4K");
+    auto camera = std::make_shared<Camera>("DSLR Camera", 7, 1200.00, "Canon", 24, true);
+    auto wearable = std::make_shared<Wearable>("Fitness Band", 30, 49.99, "Fitbit", "Fitness Band", true);
 
-    item1->modify_quantity(5);
-    item2->modify_quantity(-10);
+    auto store1 = std::make_shared<Store>("Altex");
+    store1->add_item(laptop);
+    store1->add_item(smartphone);
+    store1->add_item(camera);
 
-    auto store1 = std::make_shared<Store>("Store1");
-    store1->add_item(item1);
-    store1->add_item(item2);
-    store1->add_item(item3);
+    auto store2 = std::make_shared<Store>("Hervis");
+    store2->add_item(wearable);
 
-    std::cout << "\nstore1 items:\n";
-    store1->display_store_items();
+    auto store3 = std::make_shared<Store>("Media Galaxy");
+    store3->add_item(smartphone);
+    store3->add_item(tv);
 
-    store1->remove_item(item2->get_id());
-    std::cout << "\nafter removing item2:\n";
-    store1->display_store_items();
-
-    auto comp1 = std::make_shared<Company>("Comp1");
+    auto comp1 = std::make_shared<Company>("Altex & Media Galaxy");
     comp1->add_store(store1);
+    comp1->add_store(store3);
 
-    std::cout << "\n company stores:\n";
-    comp1->display_company_stores();
+    auto comp2 = std::make_shared<Company>("Hervis");
+    comp2->add_store(store2);
 
-    comp1->remove_store(store1->get_id());
-    std::cout << "\nafter removing store1:\n";
-    comp1->display_company_stores();
+    InventoryManager manager;
+    manager.add_company(comp1);
+    manager.add_company(comp2);
 
-    InventoryManager all_companies;
-    all_companies.add_company(comp1);
-
-    std::cout << "\ninitial companies:\n";
-    all_companies.display_all_companies();
-
-    all_companies.remove_company(comp1->get_company_id());
-    std::cout << "\nafter removing comp1:\n";
-    all_companies.display_all_companies();
-    item2.reset();
+    manager.display_all_companies();
 
     return 0;
 }
