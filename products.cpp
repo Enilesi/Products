@@ -281,40 +281,93 @@ public:
     }
 };
 
+class Gaming : public Item {
+private:
+    std::string brand;
+    std::string type;
+
+
+public:
+    Gaming(std::string i_n, int q, double p, std::string b, std::string t)
+        : Item(i_n, q, p), brand(b), type(t) {}
+
+
+    void display_inventory() const override {
+        std::cout << "Gaming - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Type: " << type
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Accessories : public Item {
+private:
+    std::string brand;
+    std::string type;
+
+public:
+    Accessories(std::string i_n, int q, double p, std::string b, std::string t)
+        : Item(i_n, q, p), brand(b), type(t) {}
+
+    void display_inventory() const override {
+        std::cout << "Accessories - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Type: " << type
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+
 
 
 int main() {
-    auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Alienware", "Intel i7", 16, 512);
-    auto smartphone = std::make_shared<Smartphone>("Galaxy S21", 20, 999.99, "Samsung", "Android", 128);
-    auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "LG", 55, "4K");
-    auto camera = std::make_shared<Camera>("DSLR Camera", 7, 1200.00, "Canon", 24, true);
-    auto tablet = std::make_shared<Tablet>("iPad Pro", 15, 799.99, "Apple", 256, true);
-    auto watch = std::make_shared<Watch>("Apple Watch", 30, 399.99, "Apple", true, true);
+    auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
+    auto smartphone = std::make_shared<Smartphone>("Ghalaxy S21", 20, 999.99, "Sansung", "Handroid", 128);
+    auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "ELG", 55, "4K");
+    auto camera = std::make_shared<Camera>("DSLR Camera", 7, 1200.00, "Canonic", 24, true);
+    auto tablet = std::make_shared<Tablet>("hiPad Pro", 15, 799.99, "Capple", 256, true);
+    auto watch = std::make_shared<Watch>("Capple Watch", 30, 399.99, "Capple", true, true);
+    auto accessory = std::make_shared<Accessories>("Laptop Bag", 30, 59.99, "HiPi", "Bag");
+    auto gaming = std::make_shared<Gaming>("Gaming Mouse", 100, 49.99, "Logictech", "Mouse");
+   
 
 
-    auto store1 = std::make_shared<Store>("Altex");
+
+    auto store1 = std::make_shared<Store>("Laltex");
     store1->add_item(laptop);
     store1->add_item(smartphone);
     store1->add_item(camera);
 
-    auto store2 = std::make_shared<Store>("Emag Showroom");
+    auto store2 = std::make_shared<Store>("Cemag Showroom");
     store2->add_item(tablet);
     store2->add_item(watch);
 
-    auto store3 = std::make_shared<Store>("Media Galaxy");
+    auto store3 = std::make_shared<Store>("Medina Ghalaxy");
     store3->add_item(smartphone);
     store3->add_item(tv);
 
-    auto comp1 = std::make_shared<Company>("Altex & Media Galaxy");
+    auto comp1 = std::make_shared<Company>("Laltex & Medina Ghalaxy");
     comp1->add_store(store1);
     comp1->add_store(store3);
 
-    auto comp2 = std::make_shared<Company>("Emag");
+    auto comp2 = std::make_shared<Company>("Cemag");
     comp2->add_store(store2);
+
+    auto store4 = std:: make_shared<Store>("Phlanco");
+    store4->add_item(accessory);
+    store4->add_item(gaming);
+
+    auto comp3 = std::make_shared<Company>("Phlanco");
+    comp3->add_store(store4);
 
     InventoryManager manager;
     manager.add_company(comp1);
     manager.add_company(comp2);
+    manager.add_company(comp3);
 
     manager.display_all_companies();
 
