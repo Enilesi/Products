@@ -6,16 +6,15 @@
 
 class Item {
 private:
-    static int next_id;
     int item_id;
     std::string item_name;
-    int quantity;
-    double price;
+    int quantity;         
+    double price;         
     int stores_number = 0;
 
 public:
-    Item(std::string i_n = "", int q = 0, double p = 0.0)
-        : item_id(next_id++), item_name(i_n), quantity(q), price(p) {}
+    Item(std::string i_n = "", int q = 0, double p = 0.0, int i=0)
+        : item_id(i), item_name(i_n), quantity(q), price(p) {}
 
     virtual void display_inventory() const {
         std::cout << "Item ID: " << item_id 
@@ -43,17 +42,15 @@ public:
     int get_stores_number() const { return stores_number; }
 };
 
-int Item::next_id = 1;
 
 class Store {
 private:
-    static int next_id;
     int store_id;
     std::string store_name;
     std::vector<std::shared_ptr<Item>> items;
 
 public:
-    Store(std::string s_n = "") : store_id(next_id++), store_name(s_n) {}
+    Store(std::string s_n = "", int s_i) : store_id(s_i++), store_name(s_n) {}
 
     void display_store_items() const {
         std::cout << "Store ID: " << store_id 
@@ -86,17 +83,15 @@ public:
     const std::string& get_store_name() const { return store_name; }
 };
 
-int Store::next_id = 1;
 
 class Company {
 private:
-    static int next_id;
     int company_id;
     std::string company_name;
     std::vector<std::shared_ptr<Store>> stores;
 
 public:
-    Company(std::string c_n = "") : company_id(next_id++), company_name(c_n) {}
+    Company(std::string c_n = "", int c_i=0) : company_id(c_i++), company_name(c_n) {}
 
     void display_company_stores() const {
         std::cout  << "Company ID: " << company_id 
@@ -124,7 +119,6 @@ public:
     int get_company_id() const { return company_id; }
 };
 
-int Company::next_id = 1;
 
 class InventoryManager {
 private:
