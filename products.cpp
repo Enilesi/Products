@@ -10,10 +10,9 @@ private:
     std::string item_name;
     int quantity;         
     double price;         
-    int stores_number = 0;
 
 public:
-    Item(std::string i_n = "", int q = 0, double p = 0.0, int i=0)
+    Item(std::string i_n = "", int q = 0, double p = 0.0, int i = 0)
         : item_id(i), item_name(i_n), quantity(q), price(p) {}
 
     virtual void display_inventory() const {
@@ -27,21 +26,11 @@ public:
         quantity += amount;
     }
 
-    void add_store_to_the_number() {
-        ++stores_number;
-    }
-
-    void remove_a_store_from_the_number() {
-        --stores_number;
-    }
-
     const std::string& get_name() const { return item_name; }
     int get_id() const { return item_id; }
     int get_quantity() const { return quantity; }
     double get_price() const { return price; }
-    int get_stores_number() const { return stores_number; }
 };
-
 
 class Store {
 private:
@@ -50,7 +39,7 @@ private:
     std::vector<std::shared_ptr<Item>> items;
 
 public:
-    Store(std::string s_n = "", int s_i) : store_id(s_i++), store_name(s_n) {}
+    Store(std::string s_n = "", int s_i = 0) : store_id(s_i), store_name(s_n) {}
 
     void display_store_items() const {
         std::cout << "Store ID: " << store_id 
@@ -61,28 +50,22 @@ public:
     }
 
     void add_item(std::shared_ptr<Item> item) {
-        item->add_store_to_the_number();
         items.push_back(item);
     }
 
     bool remove_item(int id) {
-        auto it = std::remove_if(items.begin(), items.end(),
-            [id](std::shared_ptr<Item> item) {
-                if (item->get_id() == id) {
-                    item->remove_a_store_from_the_number();
-                    return true;
-                }
-                return false;
-            });
-        bool removed = (it != items.end());
-        items.erase(it, items.end());
-        return removed;
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            if ((*it)->get_id() == id) {
+                items.erase(it);
+                return true;
+            }
+        }
+        return false;
     }
 
     int get_id() const { return store_id; }
     const std::string& get_store_name() const { return store_name; }
 };
-
 
 class Company {
 private:
@@ -91,10 +74,10 @@ private:
     std::vector<std::shared_ptr<Store>> stores;
 
 public:
-    Company(std::string c_n = "", int c_i=0) : company_id(c_i++), company_name(c_n) {}
+    Company(std::string c_n = "", int c_i = 0) : company_id(c_i++), company_name(c_n) {}
 
     void display_company_stores() const {
-        std::cout  << "Company ID: " << company_id 
+        std::cout << "Company ID: " << company_id 
                   << ", Name: " << company_name << std::endl;
         for (const auto& store : stores) {
             std::cout << std::endl;
@@ -107,18 +90,17 @@ public:
     }
 
     void remove_store(int id) {
-        auto it = std::remove_if(stores.begin(), stores.end(), [id](std::shared_ptr<Store> store) {
-            return store->get_id() == id;
-        });
-        if (it != stores.end()) {
-            stores.erase(it);
+        for (auto it = stores.begin(); it != stores.end(); ++it) {
+            if ((*it)->get_id() == id) {
+                stores.erase(it);
+                return;
+            }
         }
     }
 
     const std::string& get_company_name() const { return company_name; }
     int get_company_id() const { return company_id; }
 };
-
 
 class InventoryManager {
 private:
@@ -352,14 +334,16 @@ public:
 int main() {
     auto manager = InventoryManager::get_instance();
 
-    auto laptop = std::make_shared<Laptop>("Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
-    auto smartphone = std::make_shared<Smartphone>("Ghalaxy S21", 20, 999.99, "Sansung", "Handroid", 128);
-    auto tv = std::make_shared<TV>("Smart TV", 5, 899.99, "ELG", 55, "4K");
-    auto camera = std::make_shared<Camera>("DSLR Camera", 7, 1200.00, "Canonic", 24, true);
-    auto tablet = std::make_shared<Tablet>("hiPad Pro", 15, 799.99, "Capple", 256, true);
-    auto watch = std::make_shared<Watch>("Capple Watch", 30, 399.99, "Capple", true, true);
-    auto accessory = std::make_shared<Accessories>("Laptop Bag", 30, 59.99, "HiPi", "Bag");
-    auto gaming = std::make_shared<Gaming>("Gaming Mouse", 100, 49.99, "Logictech", "Mouse");
+    auto laptop = ItemFactory::create_item("Laptop", "Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
+    auto smartphone = ItemFactory::create_item("Smartphone", "Ghalaxy S21", 20, 999.99, "Sansung", "Handroid", 128);
+    auto tv = ItemFactory::create_item("TV", "Smart TV", 5, 899.99, "ELG", "4K", 55);
+    
+    auto camera = ItemFactory::create_item("Camera", "DSLR Camera", 7, 1200.00, "Canonic", "", 24, true);
+    auto tablet = ItemFactory::create_item("Tablet", "hiPad Pro", 15, 799.99, "Capple", "", 256, true);
+    auto watch = ItemFactory::create_item("Watch", "Capple Watch", 30, 399.99, "Capple", "", true, true);
+
+    auto accessory = ItemFactory::create_item("Accessories", "Laptop Bag", 30, 59.99, "HiPi", "Bag");
+    auto gaming = ItemFactory::create_item("Gaming", "Gaming Mouse", 100, 49.99, "Logictech", "Mouse");
 
     auto store1 = std::make_shared<Store>("Laltex");
     store1->add_item(laptop);

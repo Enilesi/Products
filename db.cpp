@@ -45,6 +45,8 @@ int main() {
             for (auto row : R) {
                 std::cout << row[1].as<std::string>() << std::endl;
             }
+
+            
         } else {
             std::cerr << "Can't open database" << std::endl;
             return 1;
