@@ -3,10 +3,12 @@
 
 std::shared_ptr<InventoryManager> InventoryManager::instance = nullptr;
 
+
 int main() {
     auto manager = InventoryManager::get_instance();
 
-    auto laptop = ItemFactory::create_item("Laptop", "Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
+    std::shared_ptr<Item> laptop = ItemFactory::create_item("Laptop", "Gaming Laptop", 10, 1500.99, "Halienware", "Hintel i7", 16, 512);
+    std::cout <<laptop->get_id()<< "\n\n";
     auto smartphone = ItemFactory::create_item("Smartphone", "Ghalaxy S21", 20, 999.99, "Sansung", "Handroid", 128);
     auto tv = ItemFactory::create_item("TV", "Smart TV", 5, 899.99, "ELG", "4K", 55);
 
@@ -50,7 +52,7 @@ int main() {
 
     save_to_database(manager);
 
-    manager->display_all_companies();
+    // manager->display_all_companies();
 
     return 0;
 }

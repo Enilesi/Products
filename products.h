@@ -150,7 +150,6 @@ public:
     }
 };
 
-// The above line has been removed
 
 class Laptop : public Item {
 private:
@@ -165,17 +164,157 @@ public:
 
     void display_inventory() const override {
         std::cout << "Laptop - ID: " << get_id()
-                  << ", Name: " << get_name()
-                  << ", Brand: " << brand
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
                   << ", Processor: " << processor
                   << ", RAM: " << ram << "GB"
                   << ", Storage: " << storage << "GB"
                   << ", Quantity: " << get_quantity()
                   << ", Price: $" << get_price() << std::endl;
     }
+};
 
-    std::string get_type() const override { return "Laptop"; }
-    std::string get_brand() const override { return brand; }
+class Smartphone : public Item {
+private:
+    std::string brand;
+    std::string os;
+    int storage;
+
+public:
+    Smartphone(std::string i_n, int q, double p, std::string b, std::string o, int s)
+        : Item(i_n, q, p), brand(b), os(o), storage(s) {}
+
+    void display_inventory() const override {
+        std::cout << "Smartphone - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", OS: " << os 
+                  << ", Storage: " << storage << "GB"
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class TV : public Item {
+private:
+    std::string brand;
+    int size;
+    std::string resolution;
+
+public:
+    TV(std::string i_n, int q, double p, std::string b, int s, std::string res)
+        : Item(i_n, q, p), brand(b), size(s), resolution(res) {}
+
+    void display_inventory() const override {
+        std::cout << "TV - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Size: " << size << " inches"
+                  << ", Resolution: " << resolution
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Camera : public Item {
+private:
+    std::string brand;
+    int megapixels;
+    bool is_dslr;
+
+public:
+    Camera(std::string i_n, int q, double p, std::string b, int mp, bool dslr)
+        : Item(i_n, q, p), brand(b), megapixels(mp), is_dslr(dslr) {}
+
+    void display_inventory() const override {
+        std::cout << "Camera - ID: " << get_id()
+                  << ", Name: " << get_name() 
+                  << ", Brand: " << brand 
+                  << ", Megapixels: " << megapixels
+                  << ", DSLR: " << (is_dslr ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Tablet : public Item {
+private:
+    std::string brand;
+    int storage;
+    bool supports_pen;
+
+public:
+    Tablet(std::string i_n, int q, double p, std::string b, int s, bool sp)
+        : Item(i_n, q, p), brand(b), storage(s), supports_pen(sp) {}
+
+    void display_inventory() const override {
+        std::cout << "Tablet - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Storage: " << storage << "GB"
+                  << ", Pen Support: " << (supports_pen ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Watch : public Item {
+private:
+    std::string brand;
+    bool waterproof;
+    bool has_gps;
+
+public:
+    Watch(std::string i_n, int q, double p, std::string b, bool w, bool gps)
+        : Item(i_n, q, p), brand(b), waterproof(w), has_gps(gps) {}
+
+    void display_inventory() const override {
+        std::cout << "Watch - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Waterproof: " << (waterproof ? "Yes" : "No")
+                  << ", GPS: " << (has_gps ? "Yes" : "No")
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Gaming : public Item {
+private:
+    std::string brand;
+    std::string type;
+
+public:
+    Gaming(std::string i_n, int q, double p, std::string b, std::string t)
+        : Item(i_n, q, p), brand(b), type(t) {}
+
+    void display_inventory() const override {
+        std::cout << "Gaming - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Type: " << type
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
+};
+
+class Accessories : public Item {
+private:
+    std::string brand;
+    std::string type;
+
+public:
+    Accessories(std::string i_n, int q, double p, std::string b, std::string t)
+        : Item(i_n, q, p), brand(b), type(t) {}
+
+    void display_inventory() const override {
+        std::cout << "Accessories - ID: " << get_id()
+                  << ", Name: " << get_name()
+                  << ", Brand: " << brand
+                  << ", Type: " << type
+                  << ", Quantity: " << get_quantity()
+                  << ", Price: $" << get_price() << std::endl;
+    }
 };
 
 class ItemFactory {
@@ -183,9 +322,24 @@ public:
     static std::shared_ptr<Item> create_item(std::string type, std::string name, int quantity, double price, std::string brand, std::string spec1 = "", int spec2 = 0, bool spec3 = false) {
         if (type == "Laptop") {
             return std::make_shared<Laptop>(name, quantity, price, brand, spec1, spec2, spec3);
+        } else if (type == "Smartphone") {
+            return std::make_shared<Smartphone>(name, quantity, price, brand, spec1, spec2);
+        } else if (type == "TV") {
+            return std::make_shared<TV>(name, quantity, price, brand, spec2, spec1);
+        } else if (type == "Camera") {
+            return std::make_shared<Camera>(name, quantity, price, brand, spec2, spec3);
+        } else if (type == "Tablet") {
+            return std::make_shared<Tablet>(name, quantity, price, brand, spec2, spec3);
+        } else if (type == "Watch") {
+            return std::make_shared<Watch>(name, quantity, price, brand, spec3, spec2);
+        } else if (type == "Gaming") {
+            return std::make_shared<Gaming>(name, quantity, price, brand, spec1);
+        } else if (type == "Accessories") {
+            return std::make_shared<Accessories>(name, quantity, price, brand, spec1);
         }
-        return nullptr;
+        throw  std::invalid_argument("Undefined type");
     }
+
 };
 
 #endif

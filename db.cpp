@@ -46,6 +46,7 @@ void associate_store_with_company(pqxx::work& txn, int store_id, int company_id)
 
 int insert_item(pqxx::work& txn, const std::shared_ptr<Item>& item) {
     std::string extra_info = "{}";
+    item->display_inventory();
     std::string query = "INSERT INTO items (name, quantity, price, type, brand, extra_info) VALUES ('" +
                         item->get_name() + "', " + std::to_string(item->get_quantity()) + ", " +
                         std::to_string(item->get_price()) + ", '" + item->get_type() + "', '" +
@@ -69,7 +70,7 @@ void save_to_database(const std::shared_ptr<InventoryManager>& manager) {
                                         " user=" + env["DB_USER"] +
                                         " password=" + env["DB_PASSWORD"] +
                                         " connect_timeout=30 sslmode=prefer target_session_attrs=read-write";
-
+        std::cout << connection_string << std:: endl;
         pqxx::connection C(connection_string);
         
         pqxx::work txn(C);

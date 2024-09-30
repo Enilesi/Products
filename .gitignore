@@ -2,3 +2,6 @@ p.exe
 libpqxx-7.9.2
 a.out
 .env
+settings.json
+launch.json
+tasks.json
