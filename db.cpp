@@ -25,40 +25,45 @@ std::map<std::string, std::string> accessing_env() {
 }
 
 int insert_company(pqxx::work& txn, const Company& company) {
-    std::string query = "INSERT INTO companies (name) VALUES ('" 
-                        + company.get_company_name() + "') RETURNING id;";
-    pqxx::result res = txn.exec(query);
+    std::string company_name=company.get_company_name();
+    std::string query = "INSERT INTO companies (name) VALUES ($1) RETURNING id;";
+    pqxx::result res = txn.exec_params(query,company_name);
     return res[0][0].as<int>();
 }
 
 int insert_store(pqxx::work& txn, const Store& store) {
-    std::string query = "INSERT INTO stores (name) VALUES ('" + store.get_store_name() 
-                        + "') RETURNING id;";
-    pqxx::result res = txn.exec(query);
+    std::string store_name = store.get_store_name() ;
+    std::string query = "INSERT INTO stores (name) VALUES ($1) RETURNING id;";
+    pqxx::result res = txn.exec_params(query,store_name);
     return res[0][0].as<int>();
 }
 
 void associate_store_with_company(pqxx::work& txn, int store_id, int company_id) {
-    std::string query = "INSERT INTO company_stores (company_id, store_id) VALUES (" 
-                        + std::to_string(company_id) + ", " + std::to_string(store_id) + ");";
-    execute_query(txn, query);
+    std::string id_company=std::to_string(company_id);
+    std::string id_store=std::to_string(store_id);
+    std::string query = "INSERT INTO company_stores (company_id, store_id) VALUES ($1,$2);";
+    pqxx::result res = txn.exec_params(query,id_store,id_company);
 }
 
 int insert_item(pqxx::work& txn, const std::shared_ptr<Item>& item) {
+    std::string item_name = item->get_name();
+    int item_quantity = item->get_quantity();
+    double item_price = item->get_price();
+    std::string item_type = item->get_type();
+    std::string item_brand = item->get_brand();
     std::string extra_info = "{}";
-    item->display_inventory();
-    std::string query = "INSERT INTO items (name, quantity, price, type, brand, extra_info) VALUES ('" +
-                        item->get_name() + "', " + std::to_string(item->get_quantity()) + ", " +
-                        std::to_string(item->get_price()) + ", '" + item->get_type() + "', '" +
-                        item->get_brand() + "', '" + extra_info + "') RETURNING id;";
-    pqxx::result res = txn.exec(query);
+    
+    std::string query = "INSERT INTO items (name, quantity, price, type, brand, extra_info) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;";
+    pqxx::result res = txn.exec_params(query, item_name, item_quantity, item_price, item_type, item_brand, extra_info);
     return res[0][0].as<int>();
 }
 
+
 void associate_item_with_store(pqxx::work& txn, int item_id, int store_id) {
-    std::string query = "INSERT INTO store_items (store_id, item_id) VALUES ("
-                         + std::to_string(store_id) + ", " + std::to_string(item_id) + ");";
-    execute_query(txn, query);
+    std::string id_store=std::to_string(store_id);
+    std::string id_item=std::to_string(item_id);
+    std::string query = "INSERT INTO store_items (store_id, item_id) VALUES ($1,$2);";
+    pqxx::result res = txn.exec_params(query,id_store,id_item);
 }
 
 void save_to_database(const std::shared_ptr<InventoryManager>& manager) {
