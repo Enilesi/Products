@@ -1,0 +1,10 @@
+.container {
+  height: 50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background: 
+  linear-gradient(to bottom right, 
+    lightskyblue, rebeccapurple, sandybrown
+  );
+}
